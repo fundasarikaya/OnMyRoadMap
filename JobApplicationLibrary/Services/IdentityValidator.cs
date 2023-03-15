@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JobApplicationLibrary.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace JobApplicationLibrary.Services
         public string Country => throw new NotImplementedException();
 
         public ICountryDataProvider CountryDataProvider => throw new NotImplementedException();
+
+        public ValidationMode ValidationMode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public bool CheckConnectionToRemoteServer()
         {

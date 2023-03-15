@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JobApplicationLibrary.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace JobApplicationLibrary.Services
         bool IsValid(string identityNumber);
         bool CheckConnectionToRemoteServer();
         ICountryDataProvider CountryDataProvider { get; }
+        ValidationMode ValidationMode { get; set; }
     }
     public interface ICountryData
     {

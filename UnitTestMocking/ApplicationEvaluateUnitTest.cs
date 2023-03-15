@@ -107,7 +107,8 @@ namespace UnitTestMocking.UnitTest
 
             //MockBehavior.Strict mockladığın interfacenin içerisindeki metotlarının setuplarının eksiksiz olması gerekir. Yoksa hata döner.            
 
-            mockValidator.DefaultValue = DefaultValue.Mock; 
+            mockValidator.DefaultValue = DefaultValue.Mock;
+            mockValidator.SetupAllProperties();
             mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("TURKEY");
 
             mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(false);
@@ -147,6 +148,32 @@ namespace UnitTestMocking.UnitTest
             var appResult = evaluator.Evaluate(form);
             //Assert
             Assert.AreEqual(ApplicationResult.TransferredToCTO, appResult);
+        }
+        [TestMethod]
+        public void Application_WithOver50_ValidationModeToDetailed()
+        {
+            //Arrange
+            var mockValidator = new Mock<IIdentityValidator>();
+
+            //Mock içerisinde verilmiş olan propertiesler mock dışında hatırlanmaz, aşağıdaki satırı eklemezsek,
+            //mockValidator.Object.ValidationMode burada ValidationMode default olarak enumın ilk degerini alır
+            //yani bizim setledigimiz kısmı geçerli saymaz
+            mockValidator.SetupAllProperties();
+
+            mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("ITALY");
+
+            var evaluator = new ApplicationEvaluator(mockValidator.Object);
+            var form = new JobApplication()
+            {
+                Applicant = new JobApplicationLibrary.Models.Applicant() { Age = 55 }
+            };
+
+            //Action
+            var appResult = evaluator.Evaluate(form);
+
+            //Assert
+            Assert.AreEqual(ValidationMode.Detailed, mockValidator.Object.ValidationMode);
+            
         }
     }
 }
