@@ -46,8 +46,10 @@ namespace UnitTestMocking.UnitTest
             //boyle bir interface varmışta onun içindeki metotlara ulaşabiliyormuşuz gibi davranır.
             //mockValidator.Object dediğimizde IIdentityValidator interfaceini vermiş olur
 
-            mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
-            
+            mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true); 
+
+            //Eğer setup yapmamış olsaydık mockladığımız interface default olarak MockBehavior.Loose gibi davranıp bize false dönerdi
+
             //bu methodu burda kullanacagım dedik setup ile
             //sahte bir obje oluşturup onun metodunu kullandık ve true donsun dedik
             //herhangi bir şey gönderildiğinde true dönsün dedik
@@ -93,8 +95,12 @@ namespace UnitTestMocking.UnitTest
         public void Application_WithInValidIdentityNumber_TransferredToHR()
         {
             //Arrange
-            var mockValidator = new Mock<IIdentityValidator>();
+            var mockValidator = new Mock<IIdentityValidator>(MockBehavior.Strict);
+
+            //mockladığın interfacenin içerisindeki metotlarının setuplarının eksiksiz olması gerekir. Yoksa hata döner.            
+
             mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(false);
+            mockValidator.Setup(i => i.CheckConnectionToRemoteServer()).Returns(false);
 
             var evaluator = new ApplicationEvaluator(mockValidator.Object);
             var form = new JobApplication()
@@ -109,3 +115,11 @@ namespace UnitTestMocking.UnitTest
         }
     }
 }
+/*
+Loose                               Strict
+Fewer lines of setup code           More lines of setup code
+Setup only what's relevant          May have to setup irrelevant things
+Default values                      Have to setup each called method
+Less brittle tests                  More brittle tests
+Existing tests continue to work     Existing tests may break
+ */
