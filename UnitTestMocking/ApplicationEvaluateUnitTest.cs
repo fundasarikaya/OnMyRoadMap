@@ -42,11 +42,15 @@ namespace UnitTestMocking.UnitTest
             //Arrange
 
             var mockValidator = new Mock<IIdentityValidator>();
-            
+
             //boyle bir interface varmışta onun içindeki metotlara ulaşabiliyormuşuz gibi davranır.
             //mockValidator.Object dediğimizde IIdentityValidator interfaceini vermiş olur
 
-            mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true); 
+            // Burayı Country property sine ulaşmak için default value set etmiş oluruz
+            mockValidator.DefaultValue = DefaultValue.Mock;
+            mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("TURKEY");
+
+            mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
 
             //Eğer setup yapmamış olsaydık mockladığımız interface default olarak MockBehavior.Loose gibi davranıp bize false dönerdi
 
@@ -72,6 +76,10 @@ namespace UnitTestMocking.UnitTest
         {
             //Arrange
             var mockValidator = new Mock<IIdentityValidator>();
+
+            mockValidator.DefaultValue = DefaultValue.Mock;
+            mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("TURKEY");
+
             mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
 
             var evaluator = new ApplicationEvaluator(mockValidator.Object);
@@ -97,7 +105,10 @@ namespace UnitTestMocking.UnitTest
             //Arrange
             var mockValidator = new Mock<IIdentityValidator>(MockBehavior.Strict);
 
-            //mockladığın interfacenin içerisindeki metotlarının setuplarının eksiksiz olması gerekir. Yoksa hata döner.            
+            //MockBehavior.Strict mockladığın interfacenin içerisindeki metotlarının setuplarının eksiksiz olması gerekir. Yoksa hata döner.            
+
+            mockValidator.DefaultValue = DefaultValue.Mock; 
+            mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("TURKEY");
 
             mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(false);
             mockValidator.Setup(i => i.CheckConnectionToRemoteServer()).Returns(false);
@@ -113,9 +124,33 @@ namespace UnitTestMocking.UnitTest
             //Assert
             Assert.AreEqual(appResult, ApplicationResult.TransferredToHR);
         }
+
+        [TestMethod]
+        public void Application_WithOfficeLocation_TransferredToCTO()
+        {
+            //Arrange
+            var mockValidator = new Mock<IIdentityValidator>();
+            //mockValidator.Setup(i => i.Country).Returns("ITALY"); Burada Country bilgisini almak için bir hiyerarşi mecut interface içerisinde
+            //bunlara ulaşmak için her interfacenin mocklanıp setuplanması gerekirdi Country bilgisine ulaşmak için
+            //ancak mock buna da çözüm getirmiş
+            mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("ITALY");
+
+
+
+            var evaluator = new ApplicationEvaluator(mockValidator.Object);
+            var form = new JobApplication()
+            {
+                Applicant = new JobApplicationLibrary.Models.Applicant() { Age = 19 }
+            };
+
+            //Action
+            var appResult = evaluator.Evaluate(form);
+            //Assert
+            Assert.AreEqual(ApplicationResult.TransferredToCTO, appResult);
+        }
     }
 }
-/*
+/***********         MockBehavior         ***********
 Loose                               Strict
 Fewer lines of setup code           More lines of setup code
 Setup only what's relevant          May have to setup irrelevant things
