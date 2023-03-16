@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace UnitTestMocking.UnitTest
 {
@@ -33,7 +34,8 @@ namespace UnitTestMocking.UnitTest
             var appResult = evaluator.Evaluate(form);
 
             //Assert
-            Assert.AreEqual(appResult, ApplicationResult.AutoRejected);
+            //Assert.AreEqual(appResult, ApplicationResult.AutoRejected);
+            appResult.Should().Be(ApplicationResult.AutoRejected);//FluentAssertions
 
         }
         [TestMethod]
@@ -52,6 +54,10 @@ namespace UnitTestMocking.UnitTest
 
             mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
 
+            //mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Throws<Exception>();
+            //mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Throws(new Exception());
+            //Geriye exception oluşmuş diyebiliyoruz
+
             //Eğer setup yapmamış olsaydık mockladığımız interface default olarak MockBehavior.Loose gibi davranıp bize false dönerdi
 
             //bu methodu burda kullanacagım dedik setup ile
@@ -69,7 +75,8 @@ namespace UnitTestMocking.UnitTest
             var appResult = evaluator.Evaluate(form);
 
             //Assert
-            Assert.AreEqual(appResult, ApplicationResult.AutoRejected);
+            //Assert.AreEqual(appResult, ApplicationResult.AutoRejected);
+            appResult.Should().Be(ApplicationResult.AutoRejected);
         }
         [TestMethod]
         public void Application_WithTechStackOver75P_TransferredToAutoAccepted()
@@ -97,7 +104,8 @@ namespace UnitTestMocking.UnitTest
             var appResult = evaluator.Evaluate(form);
 
             //Assert
-            Assert.AreEqual(appResult, ApplicationResult.AutoAccepted);
+            // Assert.AreEqual(appResult, ApplicationResult.AutoAccepted);
+            appResult.Should().Be(ApplicationResult.AutoAccepted);
         }
         [TestMethod]
         public void Application_WithInValidIdentityNumber_TransferredToHR()
@@ -123,7 +131,8 @@ namespace UnitTestMocking.UnitTest
             //Action
             var appResult = evaluator.Evaluate(form);
             //Assert
-            Assert.AreEqual(appResult, ApplicationResult.TransferredToHR);
+            // Assert.AreEqual(appResult, ApplicationResult.TransferredToHR);
+            appResult.Should().Be(ApplicationResult.TransferredToHR);
         }
 
         [TestMethod]
@@ -173,10 +182,74 @@ namespace UnitTestMocking.UnitTest
 
             //Assert
             Assert.AreEqual(ValidationMode.Detailed, mockValidator.Object.ValidationMode);
-            
+
+        }
+        [TestMethod]
+        public void Application_WithNullApplicant_ThrowsArgumentNullException()
+        {
+            //Arrange
+            var mockValidator = new Mock<IIdentityValidator>();
+
+            var evaluator = new ApplicationEvaluator(mockValidator.Object);
+            var form = new JobApplication();
+
+            //Action
+            Action appResultAction = () => evaluator.Evaluate(form);
+
+            //Assert
+            appResultAction.Should().Throw<ArgumentNullException>();
+        }
+
+        [TestMethod]
+        public void Application_WithDefaultValue_IsValidCalled()
+        {
+            //Arrange
+            var mockValidator = new Mock<IIdentityValidator>();
+            mockValidator.DefaultValue = DefaultValue.Mock;
+            mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("TURKEY");
+
+            var evaluator = new ApplicationEvaluator(mockValidator.Object);
+            var form = new JobApplication()
+            {
+                Applicant = new JobApplicationLibrary.Models.Applicant() { Age = 19 ,identityNumber="1234"}
+                
+            };
+
+            //Action
+            var appResult = evaluator.Evaluate(form);
+
+            //Assert
+            mockValidator.Verify(i=>i.IsValid(It.IsAny<string>()),"IsValidMethod should be called with 123");
+            //isValid methodumuz 123 parameteremizle çağrılmış 
+        }
+
+        [TestMethod]
+        public void Application_WithYoungAge_IsValidNeverCalled()
+        {
+            //Arrange
+            var mockValidator = new Mock<IIdentityValidator>();
+            mockValidator.DefaultValue = DefaultValue.Mock;
+            mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("TURKEY");
+
+            var evaluator = new ApplicationEvaluator(mockValidator.Object);
+            var form = new JobApplication()
+            {
+                Applicant = new JobApplicationLibrary.Models.Applicant()
+                {
+                    Age = 15
+                }
+            };
+
+            //Action
+            var appResult = evaluator.Evaluate(form);
+
+            //Assert
+            mockValidator.Verify(i => i.IsValid(It.IsAny<string>()),Times.Never);
+            //isValid hiç çağrılmamış kontrolu
         }
     }
 }
+
 /***********         MockBehavior         ***********
 Loose                               Strict
 Fewer lines of setup code           More lines of setup code
