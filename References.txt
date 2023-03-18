@@ -1,3 +1,6 @@
 JobApplicationLibrary
 UnitTestMocking.UnitTest
-Projelerinin kaynaðý --> https://www.youtube.com/@TechBuddyTR
+Projelerinin kaynaÃ°Ã½ --> https://www.youtube.com/@TechBuddyTR
+
+PollyManager
+https://www.gencayyildiz.com/blog/net-core-5-0-retry-pattern-timeout-ve-circuit-breaker-polly/
