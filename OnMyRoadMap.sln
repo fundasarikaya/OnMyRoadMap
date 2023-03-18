@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GoodToKnowLibraries", "Good
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Polly", "Polly", "{524255C9-3CDF-4EEE-B4E4-DF45C4D7C111}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyManager", "PollyManager\PollyManager.csproj", "{2FA9168A-7DF5-442D-974C-DAD84CAEB3A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollyManager", "PollyManager\PollyManager.csproj", "{897509EA-D61A-47E1-9CDB-4B7647AC5079}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,17 +15,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2FA9168A-7DF5-442D-974C-DAD84CAEB3A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FA9168A-7DF5-442D-974C-DAD84CAEB3A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FA9168A-7DF5-442D-974C-DAD84CAEB3A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FA9168A-7DF5-442D-974C-DAD84CAEB3A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{897509EA-D61A-47E1-9CDB-4B7647AC5079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{897509EA-D61A-47E1-9CDB-4B7647AC5079}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{897509EA-D61A-47E1-9CDB-4B7647AC5079}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{897509EA-D61A-47E1-9CDB-4B7647AC5079}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{524255C9-3CDF-4EEE-B4E4-DF45C4D7C111} = {3DF64B3A-BF31-4E73-800E-ABA88A481B55}
-		{2FA9168A-7DF5-442D-974C-DAD84CAEB3A0} = {524255C9-3CDF-4EEE-B4E4-DF45C4D7C111}
+		{897509EA-D61A-47E1-9CDB-4B7647AC5079} = {524255C9-3CDF-4EEE-B4E4-DF45C4D7C111}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BC5ECC50-FA7D-4A77-A5A4-96F5F466BF2D}
